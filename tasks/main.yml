@@ -1,0 +1,37 @@
+---
+# tasks file for mikrotik
+#- name: Display resource statistics (routeros)
+#  routeros_command:
+#    commands: /system resource print
+#  register: routeros_resources
+#  when: ansible_network_os == 'routeros'
+#
+#- name: debug
+#  debug:
+#    var: routeros_resources
+
+- name: copy files for {{inventory_hostname}} to flash disk on routeros
+  net_put:
+    src: "/srv/ansible/files/hpe/{{inventory_hostname}}//{{ item }}"
+    dest: "/flash/{{ item }}"
+    protocol: sftp
+  with_items:
+    - config.rsc
+    - ssh_host_dsa
+    - ssh_host_dsa.pub
+    - ssh_host_rsa
+    - ssh_host_rsa.pub
+
+
+- name: Deploy config
+#  shell: ssh admin@{{inventory_hostname}} /system reset-configuration no-defaults=yes run-after-reset=flash/config.rsc
+#  register: result
+#  ignore_errors: true
+#  changed_when:
+#    - '"Received disconnect" in result.stderr'
+  routeros_command:
+    commands: "/system reset-configuration no-defaults=yes run-after-reset=flash/config.rsc"
+    interval: 3600
+    retries: 1
+    #commands: /system resource print
+  when: ansible_network_os == 'routeros'
