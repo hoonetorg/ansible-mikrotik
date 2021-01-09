@@ -24,14 +24,14 @@
 
 
 - name: Deploy config
-#  shell: ssh admin@{{inventory_hostname}} /system reset-configuration no-defaults=yes run-after-reset=flash/config.rsc
-#  register: result
-#  ignore_errors: true
-#  changed_when:
-#    - '"Received disconnect" in result.stderr'
-  routeros_command:
-    commands: "/system reset-configuration no-defaults=yes run-after-reset=flash/config.rsc"
-    interval: 3600
-    retries: 1
-    #commands: /system resource print
+  shell: ssh admin@{{inventory_hostname}} /system reset-configuration no-defaults=yes run-after-reset=flash/config.rsc
+  register: result
+  ignore_errors: true
+  changed_when:
+    - '"Received disconnect" in result.stderr'
+#  routeros_command:
+#    commands: "/system reset-configuration no-defaults=yes run-after-reset=flash/config.rsc"
+#    interval: 3600
+#    retries: 1
+#    #commands: /system resource print
   when: ansible_network_os == 'routeros'
