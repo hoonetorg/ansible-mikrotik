@@ -10,6 +10,14 @@
   ansible.builtin.debug:
     var: routeros_resources
 
+- name: make flash dir
+  ansible.builtin.shell: >-
+    sshpass -p '{{ ansible_ssh_pass }}' ssh {{ ansible_user }}@{{ ansible_host }} /file add type=directory name=/flash
+  #register: result
+  ignore_errors: true
+  no_log: true
+  when: ansible_network_os == 'community.routeros.routeros'
+
 - name: copy files for {{inventory_hostname}} to flash disk on routeros
   ansible.netcommon.net_put:
     src: "{{mikrotik.filespath}}/{{inventory_hostname}}//{{ item }}"
